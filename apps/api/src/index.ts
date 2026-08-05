@@ -1,6 +1,5 @@
 import { Hono } from 'hono'
 import type { MiddlewareHandler } from 'hono'
-import { cors } from 'hono/cors'
 import { createClient } from '@supabase/supabase-js'
 import { sign, verify } from 'hono/jwt'
 
@@ -55,12 +54,22 @@ type ProfileRow = {
 const app = new Hono<{ Bindings: EnvBindings; Variables: Variables }>()
 
 app.use('*', async (c, next) => {
-  const origin = parseAllowedOrigins(c.env.APP_ORIGIN)
-  return cors({
-    origin,
-    allowMethods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowHeaders: ['Content-Type', 'Authorization'],
-  })(c, next)
+  const requestOrigin = c.req.header('Origin')
+  const allowedOrigins = parseAllowedOrigins(c.env.APP_ORIGIN)
+
+  if (requestOrigin && isAllowedOrigin(requestOrigin, allowedOrigins)) {
+    c.header('Access-Control-Allow-Origin', requestOrigin)
+    c.header('Vary', 'Origin')
+  }
+
+  c.header('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE,OPTIONS')
+  c.header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+
+  if (c.req.method === 'OPTIONS') {
+    return c.body(null, 204)
+  }
+
+  return next()
 })
 
 app.get('/health', (c) => {
@@ -418,6 +427,24 @@ function parseAllowedOrigins(value?: string) {
   }
 
   return origins.length === 1 ? origins[0] : origins
+}
+
+function isAllowedOrigin(requestOrigin: string, allowed: string | string[]) {
+  const patterns = Array.isArray(allowed) ? allowed : [allowed]
+
+  return patterns.some((pattern) => {
+    if (pattern === '*') {
+      return true
+    }
+
+    if (pattern.includes('*')) {
+      const normalized = pattern.replace(/^https?:\/\//, '').replace(/^\*\./, '')
+      const requestHost = requestOrigin.replace(/^https?:\/\//, '')
+      return requestHost === normalized || requestHost.endsWith(`.${normalized}`)
+    }
+
+    return requestOrigin === pattern
+  })
 }
 
 function sanitizeAnonymousNumber(value?: string) {
