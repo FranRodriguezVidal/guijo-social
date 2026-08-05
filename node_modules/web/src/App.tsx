@@ -27,6 +27,13 @@ type NumberCheckResponse = {
   message: string
 }
 
+type AuthResponse = {
+  token?: string
+  profile?: Session['profile']
+  error?: string
+  message?: string
+}
+
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8789'
 
 function App() {
@@ -104,10 +111,15 @@ function App() {
       body: JSON.stringify(payload),
     })
 
-    const data = (await response.json()) as Session & { error?: string }
+    const data = await readResponseBody(response)
 
     if (!response.ok) {
-      setError(data.error ?? 'No se pudo iniciar sesion o registrar.')
+      setError(data.error ?? data.message ?? 'No se pudo iniciar sesion o registrar.')
+      return
+    }
+
+    if (!data.token || !data.profile) {
+      setError('La respuesta del servidor no fue valida.')
       return
     }
 
@@ -152,6 +164,20 @@ function App() {
 
     const data = (await response.json()) as { items: FeedPost[] }
     setFeed(data.items)
+  }
+
+  async function readResponseBody(response: Response): Promise<AuthResponse> {
+    const rawBody = await response.text()
+
+    if (!rawBody) {
+      return {}
+    }
+
+    try {
+      return JSON.parse(rawBody) as AuthResponse
+    } catch {
+      return { message: rawBody }
+    }
   }
 
   if (screen === 'home') {
