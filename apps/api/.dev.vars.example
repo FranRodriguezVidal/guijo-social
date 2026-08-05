@@ -1,0 +1,4 @@
+SUPABASE_URL=https://eqeehjhawgbywotiheuy.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=replace-with-your-service-role-key
+JWT_SECRET=replace-with-a-long-random-secret
+APP_ORIGIN=http://localhost:5173
