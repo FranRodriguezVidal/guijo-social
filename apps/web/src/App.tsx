@@ -47,6 +47,8 @@ function App() {
   const [session, setSession] = useState<Session | null>(null)
   const [feed, setFeed] = useState<FeedPost[]>([])
   const [error, setError] = useState('')
+  const [showInfoModal, setShowInfoModal] = useState(false)
+  const [infoSection, setInfoSection] = useState<'privacy' | 'policies' | 'copyright'>('privacy')
   const [numberState, setNumberState] = useState<'idle' | 'checking' | 'available' | 'occupied' | 'not_reserved' | 'invalid'>('idle')
   const [numberMessage, setNumberMessage] = useState('')
 
@@ -182,14 +184,17 @@ function App() {
 
   if (screen === 'home') {
     return (
-      <main className="page">
-        <div className="home-shell">
-          <section className="hero">
-            <h1>Guijo Social</h1>
-            <p>Tu red social local. Inicio de toda la vida: iniciar sesion o registrar.</p>
-          </section>
+      <main className="page auth-page">
+        <div className="auth-bg" aria-hidden="true">
+          <img src="/escudo.webp" alt="" className="auth-shield" />
+        </div>
 
-          <section className="card">
+        <div className="auth-overlay">
+          <section className="auth-panel">
+            <header className="auth-header">
+              <h1>Guijo Social</h1>
+            </header>
+
             <div className="mode-switch">
               <button
                 type="button"
@@ -210,13 +215,17 @@ function App() {
             <form className="auth-form" onSubmit={handleAuthSubmit}>
               <label>
                 Numero anonym
-                <input
-                  value={anonymousNumber}
-                  onChange={(event) => setAnonymousNumber(event.target.value.replace(/\D/g, ''))}
-                  placeholder="Ejemplo: 7"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                />
+                <div className="number-input-row">
+                  <span className="number-prefix">ANONYM-</span>
+                  <input
+                    value={anonymousNumber}
+                    onChange={(event) => setAnonymousNumber(event.target.value.replace(/\D/g, ''))}
+                    placeholder="93"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    className="number-only-input"
+                  />
+                </div>
               </label>
 
               {mode === 'register' ? (
@@ -277,16 +286,104 @@ function App() {
               <button type="submit" className="primary">
                 {mode === 'register' ? 'Registrar perfil' : 'Entrar'}
               </button>
+
+              <button
+                type="button"
+                className="info-button"
+                onClick={() => {
+                  setInfoSection('privacy')
+                  setShowInfoModal(true)
+                }}
+              >
+                <span className="info-icon" aria-hidden="true">i</span>
+                <span>Informacion</span>
+              </button>
             </form>
           </section>
-
-          <section className="card">
-            <h2>Politicas y privacidad</h2>
-            <p>
-              Para mantener segura la red, se guarda edad, dispositivo y contexto basico de uso.
-            </p>
-          </section>
         </div>
+
+        {showInfoModal ? (
+          <div className="info-modal-backdrop" role="presentation" onClick={() => setShowInfoModal(false)}>
+            <section
+              className="info-modal"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Informacion legal"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <h2>Informacion</h2>
+              <div className="info-tabs" role="tablist" aria-label="Informacion legal">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={infoSection === 'privacy'}
+                  className={infoSection === 'privacy' ? 'active' : ''}
+                  onClick={() => setInfoSection('privacy')}
+                >
+                  Privacidad
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={infoSection === 'policies'}
+                  className={infoSection === 'policies' ? 'active' : ''}
+                  onClick={() => setInfoSection('policies')}
+                >
+                  Politicas
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={infoSection === 'copyright'}
+                  className={infoSection === 'copyright' ? 'active' : ''}
+                  onClick={() => setInfoSection('copyright')}
+                >
+                  Derechos de autor
+                </button>
+              </div>
+
+              {infoSection === 'privacy' ? (
+                <div className="info-section" role="tabpanel">
+                  <h3>Privacidad</h3>
+                  <p>404 ficticio</p>
+                </div>
+              ) : null}
+
+              {infoSection === 'policies' ? (
+                <div className="info-section" role="tabpanel">
+                  <h3>Politicas</h3>
+                  <p>404 ficticio</p>
+                </div>
+              ) : null}
+
+              {infoSection === 'copyright' ? (
+                <div className="info-section" role="tabpanel">
+                  <h3>Creditos</h3>
+                  <p>
+                    El escudo utilizado en esta web pertenece a su autor o titular correspondiente y se utiliza sin
+                    modificaciones, de acuerdo con los terminos de la licencia Creative Commons Attribution-ShareAlike
+                    (CC BY-SA).
+                  </p>
+                  <p>No se han realizado cambios sobre la imagen original.</p>
+                  <p>
+                    Licencia:{' '}
+                    <a
+                      href="https://creativecommons.org/licenses/by-sa/4.0/"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      https://creativecommons.org/licenses/by-sa/4.0/
+                    </a>
+                  </p>
+                </div>
+              ) : null}
+
+              <button type="button" className="primary" onClick={() => setShowInfoModal(false)}>
+                Cerrar
+              </button>
+            </section>
+          </div>
+        ) : null}
       </main>
     )
   }

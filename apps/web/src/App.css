@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Bebas+Neue&display=swap');
+
 * {
   box-sizing: border-box;
 }
@@ -6,6 +8,247 @@
   min-height: 100vh;
   padding: clamp(14px, 3vw, 24px);
   position: relative;
+}
+
+.auth-page {
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: clamp(20px, 4vw, 48px);
+  font-family: 'Manrope', 'Segoe UI', sans-serif;
+  background:
+    linear-gradient(150deg, #f6faff 0%, #d8e8ff 48%, #ffffff 100%);
+}
+
+.auth-bg {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.auth-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255, 225, 88, 0.28), transparent 40%),
+    radial-gradient(circle at 82% 78%, rgba(215, 38, 46, 0.2), transparent 36%),
+    linear-gradient(180deg, rgba(9, 43, 96, 0.14), rgba(9, 43, 96, 0.05));
+}
+
+.auth-shield {
+  width: min(84vw, 980px);
+  max-height: 90vh;
+  object-fit: contain;
+  transform: rotate(-18deg);
+  opacity: 0.48;
+  filter: saturate(125%) contrast(112%) drop-shadow(0 20px 30px rgba(10, 44, 96, 0.22));
+}
+
+.auth-overlay {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 1180px);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.auth-panel {
+  width: min(100%, 390px);
+  max-height: none;
+  overflow: visible;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 22px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: clamp(20px, 2.8vw, 30px);
+  box-shadow: 0 28px 58px rgba(15, 78, 168, 0.22);
+}
+
+.auth-header {
+  text-align: center;
+}
+
+.auth-header h1 {
+  font-size: clamp(2.9rem, 8vw, 4.9rem);
+  line-height: 1.05;
+  color: #0f4ea8;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  letter-spacing: 0.04em;
+  font-weight: 800;
+  margin: 0;
+}
+
+.auth-header p {
+  margin-top: 8px;
+  color: #113e7e;
+  font-weight: 600;
+}
+
+.auth-panel .mode-switch {
+  margin-top: 16px;
+}
+
+.auth-panel .auth-form {
+  margin-top: 14px;
+}
+
+.auth-legal {
+  margin-top: 14px;
+  font-size: 0.92rem;
+  color: #173f74;
+}
+
+.info-button {
+  border: 0;
+  background: transparent;
+  color: #0f4ea8;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  font-weight: 700;
+  cursor: pointer;
+  justify-self: center;
+  margin-top: 6px;
+  padding: 6px 8px;
+  border-radius: 999px;
+}
+
+.info-button:hover {
+  background: rgba(15, 78, 168, 0.1);
+}
+
+.info-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid rgba(15, 78, 168, 0.4);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.info-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(6, 20, 46, 0.55);
+}
+
+.info-modal {
+  width: min(100%, 560px);
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(243, 248, 255, 0.95));
+  padding: 18px;
+  color: #14376e;
+  box-shadow: 0 24px 50px rgba(9, 32, 69, 0.35);
+}
+
+.info-modal h2 {
+  margin: 0;
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  letter-spacing: 0.03em;
+  font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+}
+
+.info-tabs {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.info-tabs button {
+  border: 1px solid rgba(15, 78, 168, 0.24);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.75);
+  color: #1a4d92;
+  font-weight: 700;
+  padding: 9px 8px;
+  cursor: pointer;
+}
+
+.info-tabs button.active {
+  background: #0f4ea8;
+  color: #ffffff;
+  border-color: #0f4ea8;
+}
+
+.info-section {
+  margin-top: 10px;
+}
+
+.info-modal h3 {
+  margin: 14px 0 6px;
+  font-size: 1.03rem;
+}
+
+.info-modal p {
+  margin-top: 8px;
+}
+
+.info-modal a {
+  color: #0f4ea8;
+  word-break: break-word;
+}
+
+.info-modal .primary {
+  margin-top: 14px;
+  width: 100%;
+}
+
+.auth-panel .auth-form input {
+  background: rgba(255, 255, 255, 0.78);
+  border-color: rgba(15, 78, 168, 0.25);
+}
+
+.number-input-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #b9d1f1;
+  border-radius: 14px;
+  padding: 0 12px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.number-prefix {
+  font-weight: 800;
+  color: #0f4ea8;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.auth-panel .number-only-input {
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  padding: 12px 0;
+}
+
+.auth-panel .number-only-input:focus {
+  outline: none;
+}
+
+.number-input-row:focus-within {
+  outline: 3px solid rgba(215, 38, 46, 0.22);
+  outline-offset: 2px;
+}
+
+.auth-panel .mode-switch {
+  background: rgba(231, 239, 250, 0.72);
 }
 
 .home-shell {
@@ -241,6 +484,30 @@
     padding: 14px;
   }
 
+  .auth-page {
+    align-items: center;
+    padding: 16px;
+  }
+
+  .auth-shield {
+    width: 125vw;
+    max-width: none;
+    opacity: 0.42;
+    transform: rotate(-16deg) translateY(2%);
+  }
+
+  .auth-overlay {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .auth-panel {
+    width: 100%;
+    max-height: none;
+    border-radius: 18px;
+    padding: 18px;
+  }
+
   .hero {
     padding: 18px;
     border-radius: 20px;
@@ -295,6 +562,26 @@
 }
 
 @media (max-width: 420px) {
+  .info-tabs {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-shield {
+    width: 145vw;
+    transform: rotate(-15deg);
+    opacity: 0.38;
+  }
+
+  .auth-panel {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .auth-header p,
+  .auth-legal {
+    font-size: 0.9rem;
+  }
+
   .hero h1 {
     font-size: clamp(1.8rem, 10vw, 2.2rem);
   }
@@ -307,5 +594,20 @@
 
   .mode-switch {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 1080px) {
+  .auth-shield {
+    width: min(96vw, 920px);
+    opacity: 0.4;
+  }
+
+  .auth-overlay {
+    justify-content: center;
+  }
+
+  .auth-panel {
+    width: min(100%, 430px);
   }
 }
