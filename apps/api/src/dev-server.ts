@@ -5,60 +5,71 @@ import { createServer } from 'node:net'
 import { serve } from '@hono/node-server'
 import app from './index'
 
-const env = {
-  ...readDotEnvLike(resolve(process.cwd(), '.dev.vars')),
-  ...process.env,
-}
-
-const required = ['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'JWT_SECRET']
-for (const key of required) {
-  if (!env[key]) {
-    throw new Error(`Missing required env var: ${key}. Add it to apps/api/.dev.vars`)
-  }
-}
-
-if (String(env.SUPABASE_SERVICE_ROLE_KEY).includes('replace-with-your-service-role-key')) {
-  throw new Error(
-    'SUPABASE_SERVICE_ROLE_KEY is still a placeholder. Add the real service_role key in apps/api/.dev.vars',
-  )
-}
-
-if (String(env.SUPABASE_SERVICE_ROLE_KEY).startsWith('sb_publishable_')) {
-  throw new Error(
-    'SUPABASE_SERVICE_ROLE_KEY is using a publishable key. Put the real service_role/secret key from Supabase in apps/api/.dev.vars',
-  )
-}
-
-if (String(env.JWT_SECRET).includes('replace-with-a-long-random-secret')) {
-  throw new Error(
-    'JWT_SECRET is still a placeholder. Set a real random secret in apps/api/.dev.vars',
-  )
-}
-
-const port = 8789
-
-if (!(await isPortFree(port))) {
-  const running = await isOurApiRunning(port)
-  if (running) {
-    console.log(`API already running at http://localhost:${port}`)
-    console.log('Keeping this terminal attached. Press Ctrl+C to stop.')
-    await new Promise(() => {})
+async function main() {
+  const env = {
+    ...readDotEnvLike(resolve(process.cwd(), '.dev.vars')),
+    ...process.env,
   }
 
-  throw new Error(
-    `Port ${port} is already in use by another process. Free it and run npm run dev:api again.`,
+  const required = ['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'JWT_SECRET']
+  for (const key of required) {
+    if (!env[key]) {
+      throw new Error(`Missing required env var: ${key}. Add it to apps/api/.dev.vars`)
+    }
+  }
+
+  if (String(env.SUPABASE_SERVICE_ROLE_KEY).includes('replace-with-your-service-role-key')) {
+    throw new Error(
+      'SUPABASE_SERVICE_ROLE_KEY is still a placeholder. Add the real service_role key in apps/api/.dev.vars',
+    )
+  }
+
+  if (String(env.SUPABASE_SERVICE_ROLE_KEY).startsWith('sb_publishable_')) {
+    throw new Error(
+      'SUPABASE_SERVICE_ROLE_KEY is using a publishable key. Put the real service_role/secret key from Supabase in apps/api/.dev.vars',
+    )
+  }
+
+  if (String(env.JWT_SECRET).includes('replace-with-a-long-random-secret')) {
+    throw new Error(
+      'JWT_SECRET is still a placeholder. Set a real random secret in apps/api/.dev.vars',
+    )
+  }
+
+  const port = 8789
+
+  if (!(await isPortFree(port))) {
+    const running = await isOurApiRunning(port)
+    if (running) {
+      console.log(`API already running at http://localhost:${port}`)
+      console.log('Keeping this terminal attached. Press Ctrl+C to stop.')
+      process.stdin.resume()
+      setInterval(() => {
+        void 0
+      }, 60_000)
+      return
+    }
+
+    throw new Error(
+      `Port ${port} is already in use by another process. Free it and run npm run dev:api again.`,
+    )
+  }
+
+  serve(
+    {
+      port,
+      fetch: (request) => app.fetch(request, env),
+    },
+    (info) => {
+      console.log(`API running at http://localhost:${info.port}`)
+    },
   )
 }
 
-serve(
-  {
-    port,
-    fetch: (request) => app.fetch(request, env),
-  },
-  (info) => {
-    console.log(`API running at http://localhost:${info.port}`)
-  },
-)
+void main().catch((error) => {
+  console.error(error)
+  process.exitCode = 1
+})
 
 function readDotEnvLike(filePath: string) {
   if (!existsSync(filePath)) {
