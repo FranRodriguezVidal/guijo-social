@@ -53,6 +53,11 @@ type ProfileRow = {
 
 const app = new Hono<{ Bindings: EnvBindings; Variables: Variables }>()
 
+app.onError((error, c) => {
+  console.error('Unhandled API error:', error)
+  return c.json({ error: 'Internal Server Error' }, 500)
+})
+
 app.use('*', async (c, next) => {
   const requestOrigin = c.req.header('Origin')
   const allowedOrigins = parseAllowedOrigins(c.env.APP_ORIGIN)
@@ -497,21 +502,25 @@ async function hashPassword(password: string) {
 }
 
 async function verifyPassword(password: string, storedHash: string) {
-  const [saltPart, hashPart] = storedHash.split('.')
+  try {
+    const [saltPart, hashPart] = storedHash.split('.')
 
-  if (!saltPart || !hashPart) {
+    if (!saltPart || !hashPart) {
+      return false
+    }
+
+    const salt = Uint8Array.from(fromBase64(saltPart))
+    const expectedHash = fromBase64(hashPart)
+    const derived = new Uint8Array(await derivePasswordKey(password, salt))
+
+    if (derived.byteLength !== expectedHash.byteLength) {
+      return false
+    }
+
+    return timingSafeEqual(derived, expectedHash)
+  } catch {
     return false
   }
-
-  const salt = Uint8Array.from(fromBase64(saltPart))
-  const expectedHash = fromBase64(hashPart)
-  const derived = new Uint8Array(await derivePasswordKey(password, salt))
-
-  if (derived.byteLength !== expectedHash.byteLength) {
-    return false
-  }
-
-  return timingSafeEqual(derived, expectedHash)
 }
 
 async function derivePasswordKey(password: string, salt: Uint8Array) {
