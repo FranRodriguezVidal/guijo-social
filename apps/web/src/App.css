@@ -5,6 +5,7 @@
 .page {
   min-height: 100vh;
   padding: clamp(14px, 3vw, 24px);
+  position: relative;
 }
 
 .home-shell {
