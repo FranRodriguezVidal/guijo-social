@@ -144,7 +144,13 @@ app.get('/auth/check-number', async (c) => {
 })
 
 app.post('/auth/register', async (c) => {
-  const body = await c.req.json<RegisterPayload>()
+  let body: RegisterPayload
+  try {
+    body = await c.req.json<RegisterPayload>()
+  } catch {
+    return c.json({ error: 'Invalid JSON body.' }, 400)
+  }
+
   const anonymousNumber = sanitizeAnonymousNumber(body.anonymousNumber)
   const password = body.password?.trim()
   const age = Number(body.age)
@@ -232,7 +238,13 @@ app.post('/auth/register', async (c) => {
 })
 
 app.post('/auth/login', async (c) => {
-  const body = await c.req.json<LoginPayload>()
+  let body: LoginPayload
+  try {
+    body = await c.req.json<LoginPayload>()
+  } catch {
+    return c.json({ error: 'Invalid JSON body.' }, 400)
+  }
+
   const anonymousNumber = sanitizeAnonymousNumber(body.anonymousNumber)
   const password = body.password?.trim()
 
