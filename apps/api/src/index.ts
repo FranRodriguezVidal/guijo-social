@@ -55,7 +55,7 @@ type ProfileRow = {
 const app = new Hono<{ Bindings: EnvBindings; Variables: Variables }>()
 
 app.use('*', async (c, next) => {
-  const origin = c.env.APP_ORIGIN ?? '*'
+  const origin = parseAllowedOrigins(c.env.APP_ORIGIN)
   return cors({
     origin,
     allowMethods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -405,6 +405,19 @@ function getSupabase(env: EnvBindings) {
   return createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, {
     auth: { persistSession: false, autoRefreshToken: false },
   })
+}
+
+function parseAllowedOrigins(value?: string) {
+  const origins = value
+    ?.split(',')
+    .map((entry) => entry.trim())
+    .filter(Boolean)
+
+  if (!origins || origins.length === 0) {
+    return '*'
+  }
+
+  return origins.length === 1 ? origins[0] : origins
 }
 
 function sanitizeAnonymousNumber(value?: string) {

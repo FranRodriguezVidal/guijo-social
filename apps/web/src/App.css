@@ -4,7 +4,7 @@
 
 .page {
   min-height: 100vh;
-  padding: 24px;
+  padding: clamp(14px, 3vw, 24px);
 }
 
 .home-shell {
@@ -12,6 +12,10 @@
   margin: 0 auto;
   display: grid;
   gap: 20px;
+}
+
+.home-shell > .card {
+  min-width: 0;
 }
 
 .hero {
@@ -30,6 +34,7 @@
 
 .hero p {
   margin-top: 8px;
+  max-width: 54ch;
 }
 
 .card {
@@ -37,6 +42,7 @@
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.96);
   padding: 18px;
+  box-shadow: 0 10px 30px rgba(15, 78, 168, 0.08);
 }
 
 .mode-switch {
@@ -82,6 +88,14 @@
   background: #ffffff;
 }
 
+.auth-form input:focus,
+.mode-switch button:focus-visible,
+.primary:focus-visible,
+.profile-fab:focus-visible {
+  outline: 3px solid rgba(215, 38, 46, 0.22);
+  outline-offset: 2px;
+}
+
 .check-row {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -104,6 +118,7 @@
   color: #ffffff;
   font-weight: 700;
   cursor: pointer;
+  min-height: 48px;
 }
 
 .error {
@@ -201,17 +216,95 @@
   box-shadow: 0 12px 28px rgba(15, 78, 168, 0.3);
 }
 
+@media (min-width: 761px) {
+  .home-shell {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .hero {
+    grid-column: 1 / -1;
+  }
+
+  .card:nth-of-type(2) {
+    grid-column: 1;
+  }
+
+  .card:nth-of-type(3) {
+    grid-column: 2;
+  }
+}
+
 @media (max-width: 760px) {
   .page {
     padding: 14px;
   }
 
   .hero {
-    padding: 20px;
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .card {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .mode-switch {
+    width: 100%;
+  }
+
+  .mode-switch button {
+    padding: 10px 12px;
+    min-width: 0;
+  }
+
+  .auth-form {
+    gap: 12px;
+  }
+
+  .auth-form label,
+  .check-row {
+    font-size: 0.98rem;
+  }
+
+  .check-row {
+    grid-template-columns: 22px 1fr;
+  }
+
+  .auth-form input {
+    padding: 13px 12px;
+  }
+
+  .primary {
+    width: 100%;
   }
 
   .feed-title {
     display: grid;
     gap: 4px;
+  }
+
+  .profile-fab {
+    right: 14px;
+    bottom: 14px;
+    width: 58px;
+    height: 58px;
+  }
+}
+
+@media (max-width: 420px) {
+  .hero h1 {
+    font-size: clamp(1.8rem, 10vw, 2.2rem);
+  }
+
+  .hero p,
+  .card p,
+  .status-note {
+    font-size: 0.95rem;
+  }
+
+  .mode-switch {
+    grid-template-columns: 1fr;
   }
 }
