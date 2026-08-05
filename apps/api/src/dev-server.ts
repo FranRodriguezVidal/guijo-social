@@ -42,11 +42,8 @@ async function main() {
     const running = await isOurApiRunning(port)
     if (running) {
       console.log(`API already running at http://localhost:${port}`)
-      console.log('Keeping this terminal attached. Press Ctrl+C to stop.')
-      process.stdin.resume()
-      setInterval(() => {
-        void 0
-      }, 60_000)
+      console.log('Exiting dev wrapper cleanly.')
+      process.exit(0)
       return
     }
 
