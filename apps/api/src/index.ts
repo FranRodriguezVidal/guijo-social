@@ -1,4 +1,4 @@
-import { Hono } from 'hono'
+﻿import { Hono } from 'hono'
 import type { MiddlewareHandler } from 'hono'
 import { createClient } from '@supabase/supabase-js'
 import { sign, verify } from 'hono/jwt'
@@ -50,6 +50,9 @@ type ProfileRow = {
   accepted_policies_at: string
   accepted_privacy_at: string
 }
+
+const PASSWORD_ITERATIONS = 100000
+const PASSWORD_HASH_ALGO = 'SHA-256'
 
 const app = new Hono<{ Bindings: EnvBindings; Variables: Variables }>()
 
@@ -509,13 +512,33 @@ async function requireAuth(c: Parameters<MiddlewareHandler<{ Bindings: EnvBindin
 
 async function hashPassword(password: string) {
   const salt = crypto.getRandomValues(new Uint8Array(16))
-  const key = await derivePasswordKey(password, salt)
-  return `${toBase64(salt)}.${toBase64(new Uint8Array(key))}`
+  const key = await derivePasswordKey(password, salt, PASSWORD_ITERATIONS)
+  return `${PASSWORD_ITERATIONS}.${toBase64(salt)}.${toBase64(new Uint8Array(key))}`
 }
 
 async function verifyPassword(password: string, storedHash: string) {
   try {
-    const [saltPart, hashPart] = storedHash.split('.')
+    const parts = storedHash.split('.')
+    let iterations = PASSWORD_ITERATIONS
+    let saltPart = ''
+    let hashPart = ''
+
+    if (parts.length === 3) {
+      const parsedIterations = Number(parts[0])
+      if (!Number.isInteger(parsedIterations) || parsedIterations < 1) {
+        return false
+      }
+
+      iterations = parsedIterations
+      saltPart = parts[1]
+      hashPart = parts[2]
+    } else if (parts.length === 2) {
+      // Legacy format without iteration prefix.
+      saltPart = parts[0]
+      hashPart = parts[1]
+    } else {
+      return false
+    }
 
     if (!saltPart || !hashPart) {
       return false
@@ -523,7 +546,7 @@ async function verifyPassword(password: string, storedHash: string) {
 
     const salt = Uint8Array.from(fromBase64(saltPart))
     const expectedHash = fromBase64(hashPart)
-    const derived = new Uint8Array(await derivePasswordKey(password, salt))
+    const derived = new Uint8Array(await derivePasswordKey(password, salt, iterations))
 
     if (derived.byteLength !== expectedHash.byteLength) {
       return false
@@ -535,7 +558,7 @@ async function verifyPassword(password: string, storedHash: string) {
   }
 }
 
-async function derivePasswordKey(password: string, salt: Uint8Array) {
+async function derivePasswordKey(password: string, salt: Uint8Array, iterations: number) {
   const normalizedSalt = new Uint8Array(salt)
   const keyMaterial = await crypto.subtle.importKey(
     'raw',
@@ -549,8 +572,8 @@ async function derivePasswordKey(password: string, salt: Uint8Array) {
     {
       name: 'PBKDF2',
       salt: normalizedSalt,
-      iterations: 120000,
-      hash: 'SHA-256',
+      iterations,
+      hash: PASSWORD_HASH_ALGO,
     },
     keyMaterial,
     256,
