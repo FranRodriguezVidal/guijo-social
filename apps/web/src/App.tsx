@@ -595,6 +595,16 @@ function App() {
           {renderInfoTabs()}
           {renderInfoSection()}
 
+          {infoOrigin === 'home' ? (
+            <button
+              type="button"
+              className="secondary-button secondary-button-danger info-modal-close-button"
+              onClick={() => setShowInfoModal(false)}
+            >
+              Cerrar
+            </button>
+          ) : null}
+
           {infoOrigin === 'profile-menu' ? (
             <button
               type="button"
