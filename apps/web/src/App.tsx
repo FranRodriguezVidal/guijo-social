@@ -263,6 +263,11 @@ function App() {
   }
 
   function handleLogout() {
+    const confirmed = window.confirm('¿Estas seguro de cerrar la sesion?')
+    if (!confirmed) {
+      return
+    }
+
     setSession(null)
     setFeed([])
     setPassword('')
@@ -904,7 +909,11 @@ function App() {
               </button>
             </div>
 
-            <button type="button" className="secondary-button secondary-button-danger" onClick={() => setShowProfileMenuModal(false)}>
+            <button
+              type="button"
+              className="secondary-button secondary-button-danger profile-menu-close-button"
+              onClick={() => setShowProfileMenuModal(false)}
+            >
               Cerrar
             </button>
 

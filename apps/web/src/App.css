@@ -903,6 +903,10 @@ html {
   gap: 10px;
 }
 
+.profile-menu-close-button {
+  margin-top: 12px;
+}
+
 @keyframes feedFloat {
   0%,
   100% {
