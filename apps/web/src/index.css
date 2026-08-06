@@ -1,5 +1,5 @@
 :root {
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: 'Manrope', 'Segoe UI', sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color: #15356d;
@@ -44,5 +44,5 @@ p {
 
 h1,
 h2 {
-  font-family: 'Trebuchet MS', 'Gill Sans', sans-serif;
+  font-family: 'Outfit', 'Segoe UI', sans-serif;
 }

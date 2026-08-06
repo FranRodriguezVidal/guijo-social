@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Outfit:wght@600;700;800&display=swap');
 
 * {
   box-sizing: border-box;
@@ -84,8 +84,8 @@ html {
   font-size: clamp(2.9rem, 8vw, 4.9rem);
   line-height: 1.05;
   color: #0f4ea8;
-  font-family: 'Bebas Neue', 'Impact', sans-serif;
-  letter-spacing: 0.04em;
+  font-family: 'Outfit', 'Segoe UI', sans-serif;
+  letter-spacing: 0.02em;
   font-weight: 800;
   margin: 0;
 }
@@ -164,7 +164,7 @@ html {
 
 .info-modal h2 {
   margin: 0;
-  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  font-family: 'Outfit', 'Segoe UI', sans-serif;
   letter-spacing: 0.03em;
   font-size: clamp(1.2rem, 2.5vw, 1.5rem);
 }
@@ -396,6 +396,22 @@ html {
   -webkit-appearance: none;
 }
 
+.primary:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.secondary-button {
+  border: 1px solid rgba(15, 78, 168, 0.18);
+  border-radius: 999px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.86);
+  color: #0f4ea8;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 48px;
+}
+
 .error {
   margin: 0;
   border-radius: 12px;
@@ -419,8 +435,8 @@ html {
 }
 
 .status-note.available {
-  background: #e9f8ed;
-  color: #1c6b3e;
+  background: #fff7c9;
+  color: #0f4ea8;
 }
 
 .status-note.occupied,
@@ -438,14 +454,280 @@ html {
   height: 100%;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding-bottom: 90px;
+  padding-bottom: 120px;
   padding-right: 4px;
 }
 
-.feed-title {
+.feed-topbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 18px;
+  padding-top: 10px;
+}
+
+.feed-brandbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.feed-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.feed-brand-shield {
+  width: 52px;
+  height: 52px;
+  flex: 0 0 auto;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 18px rgba(15, 78, 168, 0.18));
+  animation: shieldHover 6s ease-in-out infinite;
+}
+
+.feed-title {
+  display: grid;
+  justify-items: start;
+  text-align: left;
+  gap: 3px;
+}
+
+.feed-title h1 {
+  margin: 0;
+  font-family: 'Outfit', 'Segoe UI', sans-serif;
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  letter-spacing: 0.03em;
+  line-height: 0.95;
+  color: #0f4ea8;
+  text-shadow: 0 10px 24px rgba(15, 78, 168, 0.18);
+}
+
+.feed-title p {
+  color: #24589f;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.profile-corner-button,
+.compose-dock-button,
+.profile-menu-button {
+  border: 0;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.profile-corner-button,
+.compose-dock-button {
+  color: #ffffff;
+  box-shadow: 0 14px 30px rgba(15, 78, 168, 0.22);
+}
+
+.profile-corner-button::before,
+.compose-dock-button::before,
+.profile-menu-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 20%, rgba(255, 255, 255, 0.34) 50%, transparent 80%);
+  transform: translateX(-130%);
+  animation: feedSheen 4.4s ease-in-out infinite;
+}
+
+.profile-corner-button {
+  width: 62px;
+  height: 62px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  flex: 0 0 auto;
+  border: 2px solid #ffffff;
+  background: conic-gradient(from 210deg, #0f4ea8 0 42%, #d7262e 42% 76%, #ffd94d 76% 90%, #ffffff 90% 100%);
+  animation: feedFloat 5s ease-in-out infinite;
+}
+
+.profile-trigger-ring {
+  width: 54px;
+  height: 54px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.88);
+  background: radial-gradient(circle at 32% 28%, #ffffff 8%, #ffd94d 42%, #0f4ea8 74%, #d7262e 100%);
+  font-weight: 800;
+  font-size: 1rem;
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.18);
+}
+
+.profile-corner-ring {
+  width: 50px;
+  height: 50px;
+}
+
+.profile-trigger-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.compose-dock-copy strong,
+.profile-menu-button strong {
+  font-family: 'Outfit', 'Segoe UI', sans-serif;
+  letter-spacing: 0.02em;
+  font-size: 1.06rem;
+  line-height: 1;
+}
+
+.compose-dock-copy small,
+.profile-menu-button small {
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  opacity: 0.92;
+}
+
+.compose-dock-button {
+  position: fixed;
+  right: max(18px, env(safe-area-inset-right));
+  bottom: max(18px, env(safe-area-inset-bottom));
+  left: auto;
+  transform: none;
+  z-index: 12;
+  display: grid;
+  place-items: center;
+  width: 70px;
+  height: 70px;
+  border-radius: 999px;
+  border: 2px solid #ffd94d;
+  background:
+    radial-gradient(circle at 28% 24%, #ffd94d 0 24%, transparent 26%),
+    linear-gradient(160deg, #0f4ea8 0%, #0f4ea8 60%, #d7262e 100%);
+  box-shadow:
+    0 16px 26px rgba(15, 78, 168, 0.35),
+    0 6px 14px rgba(215, 38, 46, 0.22);
+  animation: feedPulse 4.8s ease-in-out infinite;
+}
+
+.compose-dock-icon {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(11, 57, 123, 0.45);
+  color: transparent;
+  font-size: 0;
+}
+
+.compose-dock-icon::before,
+.compose-dock-icon::after {
+  content: '';
+  position: absolute;
+  background: #ffffff;
+  border-radius: 999px;
+}
+
+.compose-dock-icon::before {
+  width: 20px;
+  height: 3px;
+}
+
+.compose-dock-icon::after {
+  width: 3px;
+  height: 20px;
+}
+
+.profile-menu-grid {
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.profile-menu-button {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: center;
+  text-align: left;
+  padding: 14px;
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(243, 248, 255, 0.94));
+  border: 1px solid rgba(15, 78, 168, 0.14);
+  box-shadow: 0 10px 24px rgba(15, 78, 168, 0.08);
+  color: #15356d;
+}
+
+.profile-menu-button-profile {
+  border-color: rgba(15, 78, 168, 0.34);
+  background: linear-gradient(140deg, #ffffff 0%, #eef5ff 72%, #dfeeff 100%);
+}
+
+.profile-menu-button-settings {
+  border-color: rgba(215, 38, 46, 0.34);
+  background: linear-gradient(140deg, #ffffff 0%, #fff0f1 72%, #ffe4e6 100%);
+}
+
+.profile-menu-button-info {
+  border-color: rgba(255, 217, 77, 0.64);
+  background: linear-gradient(140deg, #ffffff 0%, #fff9dd 72%, #fff2b5 100%);
+}
+
+.profile-menu-button span:last-child {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 4px;
+}
+
+.profile-menu-icon {
+  position: relative;
+  z-index: 1;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #0f4ea8, #d7262e);
+  color: #ffffff;
+}
+
+.profile-menu-button-profile .profile-menu-icon {
+  background: linear-gradient(135deg, #0f4ea8, #1a6ed8);
+}
+
+.profile-menu-button-settings .profile-menu-icon {
+  background: linear-gradient(135deg, #d7262e, #a70f17);
+}
+
+.profile-menu-button-info .profile-menu-icon {
+  background: linear-gradient(135deg, #ffd94d, #f0b400);
+  color: #0f4ea8;
+}
+
+.profile-menu-icon svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.settings-actions {
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
 }
 
 .feed-list {
@@ -477,22 +759,178 @@ html {
   color: #1c5db8;
 }
 
-.profile-fab {
-  position: fixed;
-  right: 22px;
-  bottom: 22px;
-  width: 62px;
-  height: 62px;
-  border-radius: 999px;
-  border: 0;
-  background:
-    radial-gradient(circle at 35% 25%, #ffe04d 18%, transparent 20%),
-    linear-gradient(135deg, #d7262e, #0f4ea8);
-  color: #ffffff;
-  font-size: 0.75rem;
+.modal-copy {
+  margin-top: 8px;
+  color: #1f4e90;
+  line-height: 1.45;
+}
+
+.compose-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.compose-form label {
+  display: grid;
+  gap: 8px;
   font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 12px 28px rgba(15, 78, 168, 0.3);
+  color: #15356d;
+}
+
+.compose-form textarea {
+  width: 100%;
+  min-height: 140px;
+  resize: vertical;
+  border: 1px solid #b9d1f1;
+  border-radius: 18px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #15356d;
+  font: inherit;
+}
+
+.compose-form textarea:focus,
+.secondary-button:focus-visible,
+.compose-dock-button:focus-visible,
+.profile-corner-button:focus-visible,
+.profile-menu-button:focus-visible {
+  outline: 3px solid rgba(215, 38, 46, 0.22);
+  outline-offset: 2px;
+}
+
+.composer-count {
+  margin: -2px 2px 0 0;
+  text-align: right;
+  color: #1a5cb4;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.profile-modal-card {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  align-items: center;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(15, 78, 168, 0.08);
+}
+
+.profile-avatar {
+  width: 78px;
+  height: 78px;
+  border-radius: 999px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #0f4ea8, #d7262e);
+  color: #ffffff;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.profile-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-modal-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.profile-modal-copy strong {
+  color: #0f4ea8;
+  font-size: 1.05rem;
+}
+
+.profile-modal-copy p {
+  color: #20477d;
+}
+
+.profile-upload {
+  margin-top: 14px;
+  display: grid;
+  gap: 8px;
+  font-weight: 700;
+  color: #15356d;
+}
+
+.profile-upload input {
+  width: 100%;
+  border: 1px dashed rgba(15, 78, 168, 0.3);
+  border-radius: 14px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.84);
+}
+
+.profile-modal-actions {
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+@keyframes feedFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes feedPulse {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 14px 30px rgba(15, 78, 168, 0.22);
+  }
+
+  50% {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 18px 34px rgba(215, 38, 46, 0.22);
+  }
+}
+
+@keyframes feedSheen {
+  0%,
+  15% {
+    transform: translateX(-130%);
+  }
+
+  42%,
+  100% {
+    transform: translateX(130%);
+  }
+}
+
+@keyframes shieldHover {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-3px) rotate(-2deg);
+  }
+}
+
+@keyframes composeWave {
+  0%,
+  100% {
+    transform: translateY(0) scaleX(1);
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: translateY(-6px) scaleX(1.08);
+    opacity: 0.82;
+  }
 }
 
 @media (min-width: 761px) {
@@ -604,16 +1042,38 @@ html {
     width: 100%;
   }
 
-  .feed-title {
-    display: grid;
-    gap: 4px;
+  .feed-topbar {
+    align-items: flex-start;
   }
 
-  .profile-fab {
-    right: 14px;
-    bottom: 14px;
-    width: 58px;
-    height: 58px;
+  .feed-brandbar,
+  .feed-brand {
+    gap: 10px;
+  }
+
+  .feed-brand-shield {
+    width: 46px;
+    height: 46px;
+  }
+
+  .feed-title h1 {
+    font-size: clamp(1.9rem, 7vw, 2.8rem);
+  }
+
+  .compose-dock-button {
+    width: 66px;
+    height: 66px;
+    right: max(14px, env(safe-area-inset-right));
+  }
+
+  .compose-form textarea {
+    min-height: 120px;
+  }
+
+  .profile-modal-card {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
   }
 }
 
@@ -665,6 +1125,30 @@ html {
     gap: 8px;
     padding: 11px 10px;
   }
+
+  .profile-corner-button {
+    width: 58px;
+    height: 58px;
+  }
+
+  .profile-corner-ring,
+  .profile-trigger-ring {
+    width: 48px;
+    height: 48px;
+  }
+
+  .compose-dock-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.7rem;
+  }
+
+  .compose-dock-button {
+    min-height: 66px;
+    min-width: 66px;
+    padding: 0;
+    right: max(12px, env(safe-area-inset-right));
+  }
 }
 
 @media (max-width: 390px) {
@@ -709,6 +1193,47 @@ html {
   .status-note {
     font-size: 0.88rem;
     padding: 8px 9px;
+  }
+
+  .feed-topbar {
+    gap: 12px;
+  }
+
+  .feed-brandbar {
+    align-items: flex-start;
+  }
+
+  .feed-brand {
+    gap: 9px;
+  }
+
+  .feed-brand-shield {
+    width: 40px;
+    height: 40px;
+  }
+
+  .compose-dock-button {
+    width: 62px;
+    height: 62px;
+    min-height: 62px;
+    min-width: 62px;
+    right: max(10px, env(safe-area-inset-right));
+  }
+
+  .profile-menu-button {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .info-modal {
+    padding: 15px;
+    border-radius: 16px;
+  }
+
+  .compose-form textarea,
+  .profile-upload input {
+    font-size: 16px;
   }
 }
 
