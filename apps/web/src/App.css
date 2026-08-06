@@ -401,6 +401,10 @@ html {
   cursor: wait;
 }
 
+.primary-danger {
+  background: linear-gradient(135deg, #d7262e, #a70f17);
+}
+
 .secondary-button {
   border: 1px solid rgba(15, 78, 168, 0.18);
   border-radius: 999px;
@@ -410,6 +414,18 @@ html {
   font-weight: 700;
   cursor: pointer;
   min-height: 48px;
+}
+
+.secondary-button-back {
+  border-color: rgba(15, 78, 168, 0.32);
+  background: linear-gradient(135deg, #1a6ed8, #0f4ea8);
+  color: #ffffff;
+}
+
+.secondary-button-danger {
+  border-color: rgba(215, 38, 46, 0.34);
+  background: linear-gradient(135deg, #d7262e, #a70f17);
+  color: #ffffff;
 }
 
 .error {
@@ -562,9 +578,8 @@ html {
   place-items: center;
   overflow: hidden;
   border: 2px solid rgba(255, 255, 255, 0.88);
-  background: radial-gradient(circle at 32% 28%, #ffffff 8%, #ffd94d 42%, #0f4ea8 74%, #d7262e 100%);
-  font-weight: 800;
-  font-size: 1rem;
+  background: linear-gradient(135deg, #d7dbe1, #aeb5bf);
+  color: #5b6572;
   box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.18);
 }
 
@@ -577,6 +592,23 @@ html {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.profile-placeholder-icon {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.profile-placeholder-icon svg {
+  width: 60%;
+  height: 60%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .compose-dock-copy strong,
@@ -825,10 +857,8 @@ html {
   overflow: hidden;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, #0f4ea8, #d7262e);
-  color: #ffffff;
-  font-size: 1.35rem;
-  font-weight: 800;
+  background: linear-gradient(135deg, #d7dbe1, #aeb5bf);
+  color: #5b6572;
 }
 
 .profile-avatar-image {

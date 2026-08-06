@@ -62,6 +62,17 @@ function App() {
   const [composerError, setComposerError] = useState('')
   const [isPublishing, setIsPublishing] = useState(false)
 
+  function renderProfileFallbackIcon() {
+    return (
+      <span className="profile-placeholder-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <circle cx="12" cy="8" r="3.5" />
+          <path d="M5 20a7 7 0 0 1 14 0" />
+        </svg>
+      </span>
+    )
+  }
+
   useEffect(() => {
     if (screen !== 'feed') {
       return
@@ -582,7 +593,7 @@ function App() {
           {infoOrigin === 'profile-menu' ? (
             <button
               type="button"
-              className="secondary-button"
+              className="secondary-button secondary-button-back"
               onClick={() => {
                 setShowInfoModal(false)
                 setShowProfileMenuModal(true)
@@ -723,7 +734,7 @@ function App() {
                 {profileImageUrl ? (
                   <img src={profileImageUrl} alt="Foto de perfil" className="profile-trigger-image" />
                 ) : (
-                  <span>{session?.profile.anonymousNumber?.slice(-2) ?? 'GS'}</span>
+                  renderProfileFallbackIcon()
                 )}
               </span>
             </button>
@@ -819,7 +830,7 @@ function App() {
                 {profileImageUrl ? (
                   <img src={profileImageUrl} alt="Foto de perfil" className="profile-avatar-image" />
                 ) : (
-                  <span>{session?.profile.anonymousNumber?.slice(-2) ?? 'GS'}</span>
+                  renderProfileFallbackIcon()
                 )}
               </div>
               <div className="profile-modal-copy">
@@ -893,6 +904,10 @@ function App() {
               </button>
             </div>
 
+            <button type="button" className="secondary-button secondary-button-danger" onClick={() => setShowProfileMenuModal(false)}>
+              Cerrar
+            </button>
+
           </section>
         </div>
       ) : null}
@@ -912,7 +927,7 @@ function App() {
                 {profileImageUrl ? (
                   <img src={profileImageUrl} alt="Foto de perfil" className="profile-avatar-image" />
                 ) : (
-                  <span>{session?.profile.anonymousNumber?.slice(-2) ?? 'GS'}</span>
+                  renderProfileFallbackIcon()
                 )}
               </div>
               <div className="profile-modal-copy">
@@ -931,18 +946,18 @@ function App() {
             </label>
 
             <div className="profile-modal-actions">
+              <button type="button" className="secondary-button secondary-button-danger" onClick={clearProfileImage}>
+                Borrar foto
+              </button>
               <button
                 type="button"
-                className="secondary-button"
+                className="secondary-button secondary-button-back"
                 onClick={() => {
                   setShowProfileModal(false)
                   setShowProfileMenuModal(true)
                 }}
               >
                 Atras
-              </button>
-              <button type="button" className="secondary-button" onClick={clearProfileImage}>
-                Borrar foto
               </button>
             </div>
           </section>
@@ -965,23 +980,23 @@ function App() {
                 className="secondary-button"
                 onClick={() => {
                   setShowSettingsModal(false)
-                  setShowProfileMenuModal(true)
-                }}
-              >
-                Atras
-              </button>
-              <button
-                type="button"
-                className="secondary-button"
-                onClick={() => {
-                  setShowSettingsModal(false)
                   setShowStylesModal(true)
                 }}
               >
                 Estilos de tweguijo
               </button>
-              <button type="button" className="primary" onClick={handleLogout}>
+              <button type="button" className="primary primary-danger" onClick={handleLogout}>
                 Cerrar sesion
+              </button>
+              <button
+                type="button"
+                className="secondary-button secondary-button-back"
+                onClick={() => {
+                  setShowSettingsModal(false)
+                  setShowProfileMenuModal(true)
+                }}
+              >
+                Atras
               </button>
             </div>
           </section>
