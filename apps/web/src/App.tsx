@@ -41,7 +41,7 @@ function App() {
   const [mode, setMode] = useState<'register' | 'login'>('login')
   const [anonymousNumber, setAnonymousNumber] = useState('')
   const [password, setPassword] = useState('')
-  const [age, setAge] = useState('18')
+  const age = '18'
   const [acceptPolicies, setAcceptPolicies] = useState(false)
   const [acceptPrivacy, setAcceptPrivacy] = useState(false)
   const [session, setSession] = useState<Session | null>(null)
@@ -250,32 +250,18 @@ function App() {
 
               {mode === 'register' ? (
                 <>
-                  <label>
-                    Edad
-                    <input
-                      value={age}
-                      onChange={(event) => setAge(event.target.value)}
-                      inputMode="numeric"
-                    />
-                  </label>
-
                   <label className="check-row">
                     <input
                       type="checkbox"
-                      checked={acceptPolicies}
-                      onChange={(event) => setAcceptPolicies(event.target.checked)}
-                    />
-                    <span>Acepto las politicas.</span>
-                  </label>
-
-                  <label className="check-row">
-                    <input
-                      type="checkbox"
-                      checked={acceptPrivacy}
-                      onChange={(event) => setAcceptPrivacy(event.target.checked)}
+                      checked={acceptPolicies && acceptPrivacy}
+                      onChange={(event) => {
+                        setAcceptPolicies(event.target.checked)
+                        setAcceptPrivacy(event.target.checked)
+                      }}
                     />
                     <span>
-                      Acepto privacidad y recopilacion de dispositivo/uso para seguridad.
+                      Aceptas politicas, privacidad, recopilacion basica del dispositivo, uso y mas medidas de seguridad
+                      de Guijo Social.
                     </span>
                   </label>
                 </>
