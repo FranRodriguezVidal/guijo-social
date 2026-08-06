@@ -4,8 +4,13 @@
   box-sizing: border-box;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 .page {
   min-height: 100vh;
+  min-height: 100svh;
   padding: clamp(14px, 3vw, 24px);
   position: relative;
 }
@@ -14,6 +19,7 @@
   overflow: hidden;
   display: grid;
   place-items: center;
+  min-height: 100svh;
   padding: clamp(20px, 4vw, 48px);
   font-family: 'Manrope', 'Segoe UI', sans-serif;
   background:
@@ -296,6 +302,7 @@
   border-radius: 999px;
   background: #e7effa;
   padding: 6px;
+  overflow: hidden;
 }
 
 .mode-switch button {
@@ -305,6 +312,15 @@
   padding: 9px 16px;
   color: #0f4ea8;
   cursor: pointer;
+  min-width: 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.1;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .mode-switch button.active {
@@ -330,6 +346,8 @@
   border-radius: 14px;
   padding: 12px;
   background: #ffffff;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .auth-form input:focus,
@@ -363,6 +381,8 @@
   font-weight: 700;
   cursor: pointer;
   min-height: 48px;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .error {
@@ -481,12 +501,20 @@
 
 @media (max-width: 760px) {
   .page {
-    padding: 14px;
+    padding:
+      max(12px, env(safe-area-inset-top))
+      max(14px, env(safe-area-inset-right))
+      max(14px, env(safe-area-inset-bottom))
+      max(14px, env(safe-area-inset-left));
   }
 
   .auth-page {
     align-items: center;
-    padding: 16px;
+    padding:
+      max(16px, env(safe-area-inset-top))
+      max(16px, env(safe-area-inset-right))
+      max(18px, env(safe-area-inset-bottom))
+      max(16px, env(safe-area-inset-left));
   }
 
   .auth-shield {
@@ -503,6 +531,7 @@
 
   .auth-panel {
     width: 100%;
+    max-width: 430px;
     max-height: none;
     border-radius: 18px;
     padding: 18px;
@@ -520,11 +549,14 @@
 
   .mode-switch {
     width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    padding: 5px;
   }
 
   .mode-switch button {
-    padding: 10px 12px;
-    min-width: 0;
+    padding: 10px 8px;
+    font-size: 0.95rem;
   }
 
   .auth-form {
@@ -542,6 +574,14 @@
 
   .auth-form input {
     padding: 13px 12px;
+  }
+
+  .number-input-row {
+    padding: 0 10px;
+  }
+
+  .number-prefix {
+    font-size: 0.93rem;
   }
 
   .primary {
@@ -577,6 +617,10 @@
     border-radius: 16px;
   }
 
+  .auth-header h1 {
+    font-size: clamp(2.65rem, 14vw, 4.1rem);
+  }
+
   .auth-header p,
   .auth-legal {
     font-size: 0.9rem;
@@ -593,7 +637,72 @@
   }
 
   .mode-switch {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mode-switch button {
+    font-size: 0.9rem;
+    padding: 10px 6px;
+  }
+
+  .check-row {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 390px) {
+  .auth-page {
+    place-items: stretch center;
+  }
+
+  .auth-overlay {
+    align-self: center;
+  }
+
+  .auth-panel {
+    padding: 14px;
+    border-radius: 15px;
+  }
+
+  .auth-header h1 {
+    font-size: clamp(2.4rem, 13vw, 3.7rem);
+    letter-spacing: 0.03em;
+  }
+
+  .mode-switch button {
+    font-size: 0.84rem;
+    padding: 9px 4px;
+  }
+
+  .number-input-row {
+    gap: 6px;
+    padding: 0 9px;
+  }
+
+  .number-prefix {
+    font-size: 0.86rem;
+    letter-spacing: 0.01em;
+  }
+
+  .auth-panel .number-only-input,
+  .auth-form input {
+    font-size: 16px;
+  }
+
+  .status-note {
+    font-size: 0.88rem;
+    padding: 8px 9px;
+  }
+}
+
+@media (max-width: 360px) {
+  .mode-switch {
     grid-template-columns: 1fr;
+  }
+
+  .mode-switch button {
+    font-size: 0.92rem;
+    padding: 10px 8px;
   }
 }
 
