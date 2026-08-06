@@ -88,8 +88,18 @@ function App() {
     event.preventDefault()
     setError('')
 
-    if (mode === 'register' && (numberState === 'occupied' || numberState === 'not_reserved' || numberState === 'invalid')) {
-      setError(numberMessage || 'Numero no disponible.')
+    const validationError = validateAuthForm({
+      mode,
+      anonymousNumber,
+      password,
+      acceptPolicies,
+      acceptPrivacy,
+      numberState,
+      numberMessage,
+    })
+
+    if (validationError) {
+      setError(validationError)
       return
     }
 
@@ -116,7 +126,7 @@ function App() {
     const data = await readResponseBody(response)
 
     if (!response.ok) {
-      setError(data.error ?? data.message ?? 'No se pudo iniciar sesion o registrar.')
+      setError(normalizeAuthError(data.error ?? data.message, mode))
       return
     }
 
@@ -180,6 +190,125 @@ function App() {
     } catch {
       return { message: rawBody }
     }
+  }
+
+  function validateAuthForm(input: {
+    mode: 'register' | 'login'
+    anonymousNumber: string
+    password: string
+    acceptPolicies: boolean
+    acceptPrivacy: boolean
+    numberState: 'idle' | 'checking' | 'available' | 'occupied' | 'not_reserved' | 'invalid'
+    numberMessage: string
+  }) {
+    const cleanedNumber = input.anonymousNumber.trim()
+    const trimmedPassword = input.password.trim()
+
+    if (!cleanedNumber) {
+      return 'Falta escribir el numero.'
+    }
+
+    if (!/^\d+$/.test(cleanedNumber)) {
+      return 'Escribe solo numeros.'
+    }
+
+    if (!trimmedPassword) {
+      return 'Falta escribir la contrasena.'
+    }
+
+    if (input.mode === 'register') {
+      if (trimmedPassword.length < 8) {
+        return 'Contrasena corta.'
+      }
+
+      if (!input.acceptPolicies || !input.acceptPrivacy) {
+        return 'Tienes que aceptar las politicas.'
+      }
+
+      if (input.numberState === 'checking') {
+        return 'Espera, estamos comprobando el numero.'
+      }
+
+      if (input.numberState === 'occupied' || input.numberState === 'not_reserved' || input.numberState === 'invalid') {
+        return normalizeNumberMessage(input.numberMessage, input.numberState)
+      }
+    }
+
+    return ''
+  }
+
+  function normalizeNumberMessage(
+    message: string,
+    state: 'idle' | 'checking' | 'available' | 'occupied' | 'not_reserved' | 'invalid',
+  ) {
+    if (state === 'occupied') {
+      return 'Numero ocupado.'
+    }
+
+    if (state === 'not_reserved') {
+      return 'Numero no disponible.'
+    }
+
+    if (state === 'invalid') {
+      if (!message) {
+        return 'Numero invalido.'
+      }
+
+      const lowered = message.toLowerCase()
+      if (lowered.includes('solo numeros')) {
+        return 'Escribe solo numeros.'
+      }
+
+      return 'Numero invalido.'
+    }
+
+    return message || 'Numero no disponible.'
+  }
+
+  function normalizeAuthError(message: string | undefined, currentMode: 'register' | 'login') {
+    if (!message) {
+      return currentMode === 'register' ? 'No se pudo completar el registro.' : 'No se pudo iniciar sesion.'
+    }
+
+    const lowered = message.toLowerCase()
+
+    if (lowered.includes('missing registration fields')) {
+      return 'Faltan datos por escribir.'
+    }
+
+    if (lowered.includes('anonymous number and password are required')) {
+      return 'Falta numero o contrasena.'
+    }
+
+    if (lowered.includes('policies and privacy must be accepted')) {
+      return 'Tienes que aceptar las politicas.'
+    }
+
+    if (lowered.includes('password must have at least 8 characters')) {
+      return 'Contrasena corta.'
+    }
+
+    if (lowered.includes('invalid credentials')) {
+      return 'Numero o contrasena incorrectos.'
+    }
+
+    if (lowered.includes('anonymous number is not available') || lowered.includes('numero ocupado')) {
+      return 'Numero ocupado.'
+    }
+
+    if (lowered.includes('invalid json body')) {
+      return 'Error al enviar los datos.'
+    }
+
+    if (lowered.includes('internal server error')) {
+      return 'Error interno del servidor.'
+    }
+
+    if (lowered.includes('failed to fetch')) {
+      return 'No se pudo conectar con el servidor.'
+    }
+
+    return message
   }
 
   if (screen === 'home') {
@@ -331,14 +460,52 @@ function App() {
               {infoSection === 'privacy' ? (
                 <div className="info-section" role="tabpanel">
                   <h3>Privacidad</h3>
-                  <p>404 ficticio</p>
+                  <p>
+                    Guijo Social recopila la informacion minima necesaria para prestar el servicio, proteger cuentas,
+                    prevenir abusos y mantener la seguridad general de la plataforma.
+                  </p>
+                  <p>
+                    Entre esos datos pueden incluirse identificadores tecnicos del dispositivo, datos basicos de uso,
+                    registros de acceso, direccion IP, informacion del navegador o movil y otros elementos tecnicos
+                    necesarios para el funcionamiento, soporte y moderacion del servicio.
+                  </p>
+                  <p>
+                    La edad de acceso es abierta y la plataforma puede ser utilizada tambien por menores. El uso del
+                    servicio implica la aceptacion de estas condiciones informativas y del tratamiento basico de datos
+                    relacionado con seguridad, acceso y funcionamiento de la red social.
+                  </p>
+                  <p>
+                    Esta informacion podra ampliarse o actualizarse en el futuro cuando la plataforma incorpore nuevas
+                    funciones, incluyendo publicaciones con imagen, video u otros formatos multimedia.
+                  </p>
                 </div>
               ) : null}
 
               {infoSection === 'policies' ? (
                 <div className="info-section" role="tabpanel">
                   <h3>Politicas</h3>
-                  <p>404 ficticio</p>
+                  <p>
+                    Cada usuario es responsable de los textos, publicaciones, comentarios y cualquier otro contenido que
+                    comparta dentro de Guijo Social.
+                  </p>
+                  <p>
+                    Guijo Social puede revisar, ocultar o eliminar publicaciones por decision administrativa cuando se
+                    detecten posibles incumplimientos, pero esa revision puede requerir tiempo y no siempre sera
+                    inmediata.
+                  </p>
+                  <p>
+                    El hecho de que una publicacion permanezca visible durante un tiempo no supone aprobacion,
+                    supervision previa ni asuncion de responsabilidad por parte del administrador de la plataforma.
+                  </p>
+                  <p>
+                    Al utilizar el servicio y aceptar estas condiciones, el usuario reconoce que actua bajo su propia
+                    responsabilidad y que el titular de la plataforma no responde por el contenido publicado por terceros,
+                    salvo en los casos en los que la normativa aplicable exija una actuacion concreta.
+                  </p>
+                  <p>
+                    Estas condiciones podran actualizarse conforme evolucione la plataforma, especialmente cuando se
+                    habiliten nuevas funciones como imagenes, videos u otros formatos de contenido.
+                  </p>
                 </div>
               ) : null}
 

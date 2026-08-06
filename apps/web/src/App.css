@@ -9,10 +9,11 @@ html {
 }
 
 .page {
-  min-height: 100vh;
-  min-height: 100svh;
+  height: 100vh;
+  height: 100svh;
   padding: clamp(14px, 3vw, 24px);
   position: relative;
+  overflow: hidden;
 }
 
 .auth-page {
@@ -340,7 +341,7 @@ html {
   font-weight: 600;
 }
 
-.auth-form input {
+.auth-form input:not([type='checkbox']) {
   width: 100%;
   border: 1px solid #b9d1f1;
   border-radius: 14px;
@@ -360,16 +361,26 @@ html {
 
 .check-row {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 10px;
-  align-items: start;
-  font-weight: 500;
+  grid-template-columns: 20px 1fr;
+  gap: 12px;
+  align-items: center;
+  font-weight: 600;
+  line-height: 1.4;
+  padding: 12px 14px;
+  border: 1px solid rgba(15, 78, 168, 0.16);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.68);
 }
 
 .check-row input {
   width: 18px;
   height: 18px;
-  margin-top: 2px;
+  margin: 0;
+  accent-color: #0f4ea8;
+}
+
+.check-row span {
+  color: #18427c;
 }
 
 .primary {
@@ -424,7 +435,11 @@ html {
   margin: 0 auto;
   display: grid;
   gap: 14px;
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding-bottom: 90px;
+  padding-right: 4px;
 }
 
 .feed-title {
@@ -570,6 +585,7 @@ html {
 
   .check-row {
     grid-template-columns: 22px 1fr;
+    padding: 12px;
   }
 
   .auth-form input {
@@ -647,6 +663,7 @@ html {
 
   .check-row {
     gap: 8px;
+    padding: 11px 10px;
   }
 }
 
