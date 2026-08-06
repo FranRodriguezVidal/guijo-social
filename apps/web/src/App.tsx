@@ -213,12 +213,12 @@ function App() {
     }
 
     if (!trimmedPassword) {
-      return 'Falta escribir la contrasena.'
+      return 'Falta escribir la contraseña.'
     }
 
     if (input.mode === 'register') {
       if (trimmedPassword.length < 8) {
-        return 'Contrasena corta.'
+        return 'Contraseña corta.'
       }
 
       if (!input.acceptPolicies || !input.acceptPrivacy) {
@@ -277,7 +277,7 @@ function App() {
     }
 
     if (lowered.includes('anonymous number and password are required')) {
-      return 'Falta numero o contrasena.'
+      return 'Falta numero o contraseña.'
     }
 
     if (lowered.includes('policies and privacy must be accepted')) {
@@ -285,11 +285,11 @@ function App() {
     }
 
     if (lowered.includes('password must have at least 8 characters')) {
-      return 'Contrasena corta.'
+      return 'Contraseña corta.'
     }
 
     if (lowered.includes('invalid credentials')) {
-      return 'Numero o contrasena incorrectos.'
+      return 'Numero o contraseña incorrectos.'
     }
 
     if (lowered.includes('anonymous number is not available') || lowered.includes('numero ocupado')) {
@@ -368,7 +368,7 @@ function App() {
               ) : null}
 
               <label>
-                Contrasena
+                Contraseña
                 <input
                   type="password"
                   value={password}
