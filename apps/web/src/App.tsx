@@ -35,6 +35,86 @@ type AuthResponse = {
 }
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8789'
+const SESSION_STORAGE_KEY = 'guijo-social.session'
+const PROFILE_IMAGES_STORAGE_KEY = 'guijo-social.profile-images'
+
+function readStoredSession(): Session | null {
+  try {
+    const rawSession = localStorage.getItem(SESSION_STORAGE_KEY)
+    if (!rawSession) {
+      return null
+    }
+
+    const parsed = JSON.parse(rawSession) as Session
+    if (!parsed?.token || !parsed?.profile?.id || !parsed?.profile?.anonymousNumber) {
+      return null
+    }
+
+    return parsed
+  } catch {
+    return null
+  }
+}
+
+function writeStoredSession(nextSession: Session | null) {
+  if (!nextSession) {
+    localStorage.removeItem(SESSION_STORAGE_KEY)
+    return
+  }
+
+  localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(nextSession))
+}
+
+function readStoredProfileImages() {
+  try {
+    const rawImages = localStorage.getItem(PROFILE_IMAGES_STORAGE_KEY)
+    if (!rawImages) {
+      return {} as Record<string, string>
+    }
+
+    return JSON.parse(rawImages) as Record<string, string>
+  } catch {
+    return {} as Record<string, string>
+  }
+}
+
+function readStoredProfileImage(anonymousNumber: string) {
+  const imagesByNumber = readStoredProfileImages()
+  return imagesByNumber[anonymousNumber] ?? ''
+}
+
+function writeStoredProfileImage(anonymousNumber: string, imageDataUrl: string) {
+  const imagesByNumber = readStoredProfileImages()
+  imagesByNumber[anonymousNumber] = imageDataUrl
+  localStorage.setItem(PROFILE_IMAGES_STORAGE_KEY, JSON.stringify(imagesByNumber))
+}
+
+function removeStoredProfileImage(anonymousNumber: string) {
+  const imagesByNumber = readStoredProfileImages()
+  delete imagesByNumber[anonymousNumber]
+  localStorage.setItem(PROFILE_IMAGES_STORAGE_KEY, JSON.stringify(imagesByNumber))
+}
+
+function fileToDataUrl(file: File) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader()
+
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        resolve(reader.result)
+        return
+      }
+
+      reject(new Error('Image read failed.'))
+    }
+
+    reader.onerror = () => {
+      reject(new Error('Image read failed.'))
+    }
+
+    reader.readAsDataURL(file)
+  })
+}
 
 function App() {
   const [screen, setScreen] = useState<'home' | 'feed'>('home')
@@ -74,6 +154,16 @@ function App() {
   }
 
   useEffect(() => {
+    const storedSession = readStoredSession()
+    if (!storedSession) {
+      return
+    }
+
+    setSession(storedSession)
+    setScreen('feed')
+  }, [])
+
+  useEffect(() => {
     if (screen !== 'feed') {
       return
     }
@@ -106,12 +196,32 @@ function App() {
   }, [anonymousNumber, mode])
 
   useEffect(() => {
-    return () => {
-      if (profileImageUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(profileImageUrl)
-      }
+    writeStoredSession(session)
+  }, [session])
+
+  useEffect(() => {
+    const anonymousId = session?.profile.anonymousNumber
+    if (!anonymousId) {
+      setProfileImageUrl('')
+      return
     }
-  }, [profileImageUrl])
+
+    setProfileImageUrl(readStoredProfileImage(anonymousId))
+  }, [session?.profile.anonymousNumber])
+
+  useEffect(() => {
+    const anonymousId = session?.profile.anonymousNumber
+    if (!anonymousId) {
+      return
+    }
+
+    if (!profileImageUrl) {
+      removeStoredProfileImage(anonymousId)
+      return
+    }
+
+    writeStoredProfileImage(anonymousId, profileImageUrl)
+  }, [profileImageUrl, session?.profile.anonymousNumber])
 
   async function handleAuthSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -164,6 +274,7 @@ function App() {
       return
     }
 
+    setProfileImageUrl('')
     setSession({ token: data.token, profile: data.profile })
     setScreen('feed')
   }
@@ -271,6 +382,7 @@ function App() {
     setSession(null)
     setFeed([])
     setPassword('')
+    setProfileImageUrl('')
     setComposerText('')
     setComposerError('')
     setShowComposerModal(false)
@@ -284,29 +396,21 @@ function App() {
     setScreen('home')
   }
 
-  function handleProfileImageChange(file: File | undefined) {
+  async function handleProfileImageChange(file: File | undefined) {
     if (!file) {
       return
     }
 
-    const nextUrl = URL.createObjectURL(file)
-    setProfileImageUrl((currentUrl) => {
-      if (currentUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(currentUrl)
-      }
-
-      return nextUrl
-    })
+    try {
+      const imageDataUrl = await fileToDataUrl(file)
+      setProfileImageUrl(imageDataUrl)
+    } catch {
+      window.alert('No se pudo guardar la foto ahora.')
+    }
   }
 
   function clearProfileImage() {
-    setProfileImageUrl((currentUrl) => {
-      if (currentUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(currentUrl)
-      }
-
-      return ''
-    })
+    setProfileImageUrl('')
   }
 
   async function readResponseBody(response: Response): Promise<AuthResponse> {
